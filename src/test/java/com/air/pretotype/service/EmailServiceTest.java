@@ -4,6 +4,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.air.pretotype.model.UserEmail;
 import com.air.pretotype.repository.EmailRepository;
 
 @SpringBootTest
@@ -42,5 +45,14 @@ class EmailServiceTest {
 
 	@Test
 	void save() {
+		// given
+		UserEmail email = UserEmail.builder()
+				.emailAddress("test123@gmail.com")
+				.build();
+		// when
+		service.save(email);
+
+		// then
+		verify(repository,times(1)).save(email);
 	}
 }
