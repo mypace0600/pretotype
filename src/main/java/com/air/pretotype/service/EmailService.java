@@ -6,8 +6,19 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.air.pretotype.model.UserEmail;
@@ -21,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class EmailService {
 
+	private  final JavaMailSender javaMailSender;
 	private final EmailRepository repository;
 
 	private String encrypt(String code){
@@ -80,8 +92,28 @@ public class EmailService {
 
 		return result;
 	}
+
 	public void save(UserEmail email){
-		email.setDiscountCode(createDiscountCode());
 		repository.save(email);
 	}
+	public void send(UserEmail email){
+		email.setDiscountCode(createDiscountCode());
+		save(email);
+
+		MimeMessage message = javaMailSender.createMimeMessage();
+		try {
+			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,true,"UTF-8");
+
+			mimeMessageHelper.setFrom("mypace0600@gmail.com");
+			mimeMessageHelper.setTo(email.getEmailAddress());
+			mimeMessageHelper.setSubject("test");
+			mimeMessageHelper.setText(email.getDiscountCode());
+
+			javaMailSender.send(message);
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
 }

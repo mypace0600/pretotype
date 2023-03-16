@@ -21,7 +21,8 @@ public class EmailController {
 	@PostMapping("/send")
 	public ResponseDto<Integer> userEmail(@RequestBody UserEmail email){
 		log.info("@@@@@@@@@@ email :{}",email);
-		service.save(email);
+		service.send(email);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(),1);
 	}
+
 }
