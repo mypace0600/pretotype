@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
@@ -38,17 +40,15 @@ public class EmailService {
 		for (byte b : bytes) {
 			builder.append(String.format("%02x", b));
 		}
-		log.info("@@@@@@@@@@ code encrypt :{}",builder.toString());
 		return builder.toString();
 	}
 
-	private String createDiscountCode(){
+	public String createDiscountCode(){
 		String code = "";
 
 		// 시간데이터 생성
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
 		String timeData = formatter.format(LocalDateTime.now());
-		log.info("@@@@@@@@@@ timeData :{}",timeData);
 
 		// 난수 10자리 생성
 		Random random =new Random();
@@ -60,12 +60,25 @@ public class EmailService {
 				randomData+=((random.nextInt(10)));
 			}
 		}
-		log.info("@@@@@@@@@@ randomData :{}",randomData);
 
 		code = timeData+randomData;
-		log.info("@@@@@@@@@@ code :{}",code);
 
 		return encrypt(code);
+	}
+
+	public boolean checkDisCountCodeDistinct(List<String> codeList){
+
+		boolean result = true;
+
+		for(int i = 0; i<codeList.size();i++){
+			for(int j = 0; j<i; j++){
+				if(codeList.get(i).equals(codeList.get(j))){
+					return !result;
+				}
+			}
+		}
+
+		return result;
 	}
 	public void save(UserEmail email){
 		email.setDiscountCode(createDiscountCode());
