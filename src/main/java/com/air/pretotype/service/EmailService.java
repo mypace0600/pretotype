@@ -4,21 +4,19 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
+import javax.mail.Authenticator;
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.air.pretotype.model.UserEmail;
@@ -32,7 +30,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class EmailService {
 
-	private  final JavaMailSender javaMailSender;
+	@Value("${EMAIL_SEND_INFO.adminEmail}")
+	String user;
+	@Value("${EMAIL_SEND_INFO.adminEmailPassword}")
+	String password;
 	private final EmailRepository repository;
 
 	private String encrypt(String code){
@@ -96,24 +97,38 @@ public class EmailService {
 	public void save(UserEmail email){
 		repository.save(email);
 	}
+
 	public void send(UserEmail email){
 		email.setDiscountCode(createDiscountCode());
 		save(email);
 
-		MimeMessage message = javaMailSender.createMimeMessage();
+		Properties props = new Properties();
+		props.put("mail.smtp.host", "smtp.naver.com");
+		props.put("mail.smtp.port", 587);
+		props.put("mail.smtp.auth", "true");
+
+		Authenticator auth = new SMTPAuthenticator();
+
+		Session session = Session.getDefaultInstance(props,auth);
+
+		MimeMessage message = new MimeMessage(session);
 		try {
-			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,true,"UTF-8");
+			message.setFrom(new InternetAddress(user));
+			message.addRecipient(Message.RecipientType.TO,new InternetAddress(email.getEmailAddress()));
+			message.setSubject("할인 코드");
+			message.setText(email.getDiscountCode());
 
-			mimeMessageHelper.setFrom("mypace0600@gmail.com");
-			mimeMessageHelper.setTo(email.getEmailAddress());
-			mimeMessageHelper.setSubject("test");
-			mimeMessageHelper.setText(email.getDiscountCode());
-
-			javaMailSender.send(message);
-		} catch (MessagingException e) {
+			Transport.send(message);
+		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
 
+	private class SMTPAuthenticator extends javax.mail.Authenticator{
+		public PasswordAuthentication getPasswordAuthentication(){
+			return new PasswordAuthentication(user,password);
+		}
 	}
 
 }
