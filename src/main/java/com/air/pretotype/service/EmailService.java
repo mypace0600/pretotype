@@ -10,6 +10,7 @@ import java.util.Random;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -17,6 +18,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.air.pretotype.model.UserEmail;
@@ -34,6 +36,10 @@ public class EmailService {
 	String user;
 	@Value("${EMAIL_SEND_INFO.adminEmailPassword}")
 	String password;
+
+	//의존성 주입을 통해서 필요한 객체를 가져온다.
+	private final JavaMailSender emailSender;
+
 	private final EmailRepository repository;
 
 	private String encrypt(String code){
@@ -98,31 +104,28 @@ public class EmailService {
 		repository.save(email);
 	}
 
-	public void send(UserEmail email){
-		email.setDiscountCode(createDiscountCode());
+	public MimeMessage createEmailForm(String email,String discountCode) throws MessagingException {
+		String setFrom = user;
+		String toEmail = email;
+		String title = "할인코드";
+
+		MimeMessage message = emailSender.createMimeMessage();
+		message.setFrom(new InternetAddress(user));
+		message.addRecipients(MimeMessage.RecipientType.TO,email);
+		message.setSubject("할인 코드");
+		message.setText(discountCode);
+		return message;
+	}
+
+	public void send(UserEmail email) throws MessagingException {
+		String discountCode = createDiscountCode();
+		email.setDiscountCode(discountCode);
 		save(email);
 
-		Properties props = new Properties();
-		props.put("mail.smtp.host", "smtp.naver.com");
-		props.put("mail.smtp.port", 587);
-		props.put("mail.smtp.auth", "true");
+		MimeMessage message = createEmailForm(email.getEmailAddress(),discountCode);
 
-		Authenticator auth = new SMTPAuthenticator();
+		emailSender.send(message);
 
-		Session session = Session.getDefaultInstance(props,auth);
-
-		MimeMessage message = new MimeMessage(session);
-		try {
-			message.setFrom(new InternetAddress(user));
-			message.addRecipient(Message.RecipientType.TO,new InternetAddress(email.getEmailAddress()));
-			message.setSubject("할인 코드");
-			message.setText(email.getDiscountCode());
-
-			Transport.send(message);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
 	}
 
 	private class SMTPAuthenticator extends javax.mail.Authenticator{

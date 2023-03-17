@@ -1,5 +1,7 @@
 package com.air.pretotype.controller;
 
+import javax.mail.MessagingException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +21,7 @@ public class EmailController {
 	private final EmailService service;
 
 	@PostMapping("/send")
-	public ResponseDto<Integer> userEmail(@RequestBody UserEmail email){
+	public ResponseDto<Integer> userEmail(@RequestBody UserEmail email) throws Exception {
 		log.info("@@@@@@@@@@ email :{}",email);
 		service.send(email);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(),1);

@@ -16,6 +16,9 @@
         <input type="email" placeholder="Enter Your Email" id="box-email">
     </form>
     <button id="btn-email-send">이메일 보내기</button>
+
+    <div>Unique Visitor ${CountDto.firstVisitCount}</div>
+    <div>Total Visitor ${CountDto.totalVisitCount}</div>
 </body>
 
 <script src="/js/index.js"></script>
