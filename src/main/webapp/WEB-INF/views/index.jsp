@@ -18,6 +18,7 @@
     <button id="btn-email-send">이메일 보내기</button>
 
     <div>Today Visitor ${todayCount}</div>
+    <div>Total Visitor ${totalCount}</div>
 </body>
 
 <script src="/js/index.js"></script>

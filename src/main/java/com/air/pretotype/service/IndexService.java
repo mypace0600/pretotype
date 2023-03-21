@@ -2,15 +2,15 @@ package com.air.pretotype.service;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.air.pretotype.config.component.Scheduler;
 import com.air.pretotype.model.Count;
@@ -57,6 +57,7 @@ public class IndexService {
 	}
 
 
+	@Transactional
 	public void saveVisitCount(HttpServletRequest request){
 		String clientAddress = request.getRemoteAddr();
 		if(isFirst(clientAddress)){
@@ -67,18 +68,33 @@ public class IndexService {
 		log.info("@@@@@@@@@@@ nowCount :{}",nowCount);
 		LocalDate todayDate = LocalDate.now();
 		log.info("@@@@@@@@@@@ todayDate :{}",todayDate);
-		countRepository.save(Count.builder()
-									.dateInfo(todayDate)
-									.todayCount(nowCount)
-								.build());
+		Optional<Count> count = countRepository.findByDateInfo(todayDate);
+		if(!count.isPresent()){
+			countRepository.save(Count.builder()
+							.todayCount(nowCount)
+							.dateInfo(todayDate)
+					.build());
+		} else {
+			count.ifPresent(a->{
+				a.setTodayCount(nowCount);
+			});
+		}
 	}
 
-	public int getVisitCount(){
+	public int getTodayCount(){
 		LocalDate todayDate = LocalDate.now();
 		Count count = countRepository.findByDateInfo(todayDate).orElseThrow(()->{
 			return new IllegalArgumentException("해당 날짜가 없습니다.");
 		});
 		return count.getTodayCount();
+	}
+
+	public int getTotalCount(){
+		LocalDate todayDate = LocalDate.now();
+		Count count = countRepository.findByDateInfo(todayDate).orElseThrow(()->{
+			return new IllegalArgumentException("해당 날짜가 없습니다.");
+		});
+		return count.getTotalCount();
 	}
 
 }

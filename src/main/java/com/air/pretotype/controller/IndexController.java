@@ -18,7 +18,8 @@ public class IndexController {
 	public String index(HttpServletRequest request, Model model){
 		indexService.saveVisitCount(request);
 		try {
-			model.addAttribute("todayCount",indexService.getVisitCount());
+			model.addAttribute("todayCount",indexService.getTodayCount());
+			model.addAttribute("totalCount",indexService.getTotalCount());
 		} catch (Exception e){
 			e.printStackTrace();
 		}
