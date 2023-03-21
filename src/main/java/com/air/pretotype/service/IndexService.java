@@ -1,15 +1,20 @@
 package com.air.pretotype.service;
 
-
-import java.util.Map;
-
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.air.pretotype.contract.response.CountDto;
-import com.air.pretotype.model.Visitor;
-import com.air.pretotype.repository.VisitorRepository;
+import com.air.pretotype.config.component.Scheduler;
+import com.air.pretotype.model.Count;
+import com.air.pretotype.repository.CountRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,39 +24,61 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class IndexService {
 
-	private final RedisService redisService;
+	private final CountRepository countRepository;
+	private final StringRedisTemplate redisTemplate;
 
-	private final VisitorRepository visitorRepository;
+	private final Scheduler scheduler;
 
-	public CountDto visitCount(HttpServletRequest request) throws Exception{
-		String clientAddress = request.getRemoteAddr();
-		boolean isFirst = redisService.isFirstIpRequest(clientAddress);
-		if(isFirst){
-			Visitor visitor = visitorRepository.findByClientAddress(clientAddress).orElse(
-					visitorRepository.save(Visitor.builder()
-									.clientAddress(clientAddress)
-									.visitCount(1)
-									.build())
-			);
-			if(visitor!=null) {
-				visitor.setVisitCount(visitor.getVisitCount() + 1);
-			}
-		} else {
-			Visitor visitor = visitorRepository.findByClientAddress(clientAddress).orElseThrow(()->{
-				return new IllegalArgumentException("client address 오류");
-			});
-			if(visitor!=null) {
-				visitor.setVisitCount(visitor.getVisitCount() + 1);
-			}
-		}
-		redisService.writeClientRequest(clientAddress);
 
-		int firstVisitCount = visitorRepository.firstVisitCount();
-		int totalVisitCount = visitorRepository.totalVisitCount();
-
-		return CountDto.builder()
-				.firstVisitCount(firstVisitCount)
-				.totalVisitCount(totalVisitCount)
-				.build();
+	private boolean isFirst(String clientAddress){
+		return redisTemplate.hasKey(clientAddress);
 	}
+
+	private void store(String clientAddress){
+		ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
+		stringStringValueOperations.set("clientAddress",clientAddress, Duration.ofSeconds(1L));
+		String key ="count";
+		LocalTime start = LocalTime.now();
+		LocalTime end = LocalTime.MAX;
+		stringStringValueOperations.set(key,"1",Duration.between(start,end));
+
+	}
+
+	private void increment(){
+		String key ="count";
+		ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
+		stringStringValueOperations.increment(key);
+	}
+
+	private int getCount(){
+		String count ="count";
+		ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
+		return Integer.parseInt(stringStringValueOperations.get(count));
+	}
+
+
+	public void saveVisitCount(HttpServletRequest request){
+		String clientAddress = request.getRemoteAddr();
+		if(isFirst(clientAddress)){
+			increment();
+		}
+		store(clientAddress);
+		int nowCount = getCount();
+		log.info("@@@@@@@@@@@ nowCount :{}",nowCount);
+		LocalDate todayDate = LocalDate.now();
+		log.info("@@@@@@@@@@@ todayDate :{}",todayDate);
+		countRepository.save(Count.builder()
+									.dateInfo(todayDate)
+									.todayCount(nowCount)
+								.build());
+	}
+
+	public int getVisitCount(){
+		LocalDate todayDate = LocalDate.now();
+		Count count = countRepository.findByDateInfo(todayDate).orElseThrow(()->{
+			return new IllegalArgumentException("해당 날짜가 없습니다.");
+		});
+		return count.getTodayCount();
+	}
+
 }
