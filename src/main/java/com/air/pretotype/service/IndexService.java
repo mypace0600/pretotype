@@ -27,21 +27,17 @@ public class IndexService {
 	private final CountRepository countRepository;
 	private final StringRedisTemplate redisTemplate;
 
-	private final Scheduler scheduler;
-
-
 	private boolean isFirst(String clientAddress){
 		return redisTemplate.hasKey(clientAddress);
 	}
 
 	private void store(String clientAddress){
 		ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
-		stringStringValueOperations.set("clientAddress",clientAddress, Duration.ofSeconds(1L));
+		stringStringValueOperations.set("clientAddress",clientAddress, Duration.ofMinutes(100L));
 		String key ="count";
-		LocalTime start = LocalTime.now();
+		LocalTime start = LocalTime.MIN;
 		LocalTime end = LocalTime.MAX;
 		stringStringValueOperations.set(key,"1",Duration.between(start,end));
-
 	}
 
 	private void increment(){
@@ -65,9 +61,7 @@ public class IndexService {
 		}
 		store(clientAddress);
 		int nowCount = getCount();
-		log.info("@@@@@@@@@@@ nowCount :{}",nowCount);
 		LocalDate todayDate = LocalDate.now();
-		log.info("@@@@@@@@@@@ todayDate :{}",todayDate);
 		Optional<Count> count = countRepository.findByDateInfo(todayDate);
 		if(!count.isPresent()){
 			countRepository.save(Count.builder()
