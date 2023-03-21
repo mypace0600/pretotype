@@ -1,18 +1,18 @@
 package com.air.pretotype.model;
 
-
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,19 +26,20 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class Visitor {
+public class Count {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Column(nullable = false, length = 500)
-	private String clientAddress;
+	private int totalCount;
 
-	@Column(nullable = false, length = 500)
-	private int visitCount;
+	@Column(nullable = false, length = 200)
+	private int todayCount;
 
-	@CreationTimestamp
-	private Timestamp createDate;
+	@Column
+	@JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone="Asia/Seoul")
+	private LocalDate dateInfo;
 
 }
