@@ -19,6 +19,7 @@
 <section>
     <div class="container">
         <div class="card">
+
         </div>
     </div>
 </section>
@@ -38,7 +39,7 @@
             <div class="card-body">
                 <form>
                     <input type="checkbox" id="email-agree-checkbox">
-                    <label for="email-agree-checkbox">이메일 수집 동의 <a href="#">자세한 내용 보기</a></label>
+                    <label for="email-agree-checkbox">이메일 수집 동의 <a href="https://tender-elm-897.notion.site/bdec320429f248e1a71a6363ff381e6d">자세한 내용 보기</a></label>
                     <input type="email" placeholder="이메일을 적어주세요" id="box-email">
                 </form>
                 <button id="btn-email-send">할인쿠폰 신청하기</button>
