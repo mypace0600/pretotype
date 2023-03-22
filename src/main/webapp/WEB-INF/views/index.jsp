@@ -19,7 +19,11 @@
 <section>
     <div class="container">
         <div class="card">
-
+            <div class="card-body">
+                <div class="text-box-title">
+                    대충 타이틀
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -66,6 +70,17 @@
                     나만의 스타일 찾기를 통해
                     <br />
                     적합한 스타일을 추천받을 수 있습니다.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-box-footer">
+                    대충 푸터
                 </div>
             </div>
         </div>
