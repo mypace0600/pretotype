@@ -7,14 +7,16 @@ let index = {
 
     send : function (){
         let data ={
-            emailAddress : $("#box-email").val()
+            emailAddress : $("#box-email").val(),
+            emailAgree : $("#email-agree-checkbox").is(':checked')
         };
 
         let regexEmail = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
         if(!regexEmail.test(data.emailAddress)){
             alert("이메일 형식이 올바르지 않습니다.");
+        } else if(!data.emailAgree) {
+            alert("이메일 수집에 동의하지 않았습니다.")
         } else {
-            alert("이메일 형식에 적합합니다.");
             $.ajax({
                 type: "POST",
                 url: "/send",
