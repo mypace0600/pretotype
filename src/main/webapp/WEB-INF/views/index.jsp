@@ -21,7 +21,13 @@
         <div class="card">
             <div class="card-body">
                 <div class="text-box-title">
-                    대충 타이틀
+                    <h1>머리 어떻게 해드릴까요?</h1>
+                    <img src="/img/smiling_face_3d.png"/>
+                </div>
+                <div class="text-box-title">
+                    <img src="/img/anxious_face_with_sweat_3d.png"/>
+                    <h3>뭐라고 말하고 싶은데</h3>
+                    <h3>제대로 말하지 못했다면?</h3>
                 </div>
             </div>
         </div>
@@ -37,7 +43,7 @@
                     미리 정해서 예약할 수 있는
                 </div>
                 <div class="text-box-title">
-                    <h2>미리헤어</h2>
+                    <h1>미리헤어</h1>
                 </div>
             </div>
             <div class="card-body">
@@ -80,7 +86,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="text-box-footer">
-                    대충 푸터
+                    Today Visitors : ${todayCount}
                 </div>
             </div>
         </div>
