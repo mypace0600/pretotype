@@ -3,31 +3,11 @@
         opacity: 1;
         transform : rotateY(0)
     }
-    10%{
-        opacity: 1;
-        transform : rotateY(0)
-    }
     20%{
         opacity: 1;
         transform : rotateY(0)
     }
     30%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
-    40%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
-    50%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
-    60%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
-    70%{
         transform : rotateY(180deg);
         opacity: 0;
     }
@@ -46,10 +26,6 @@
         transform : rotateY(180deg);
         opacity: 0;
     }
-    10%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
     20%{
         transform : rotateY(180deg);
         opacity: 0;
@@ -58,23 +34,11 @@
         transform : rotateY(0);
         opacity: 1;
     }
-    40%{
-        transform : rotateY(0);
-        opacity: 1;
-    }
     50%{
         transform : rotateY(0);
         opacity: 1;
     }
     60%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
-    70%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
-    90%{
         transform : rotateY(180deg);
         opacity: 0;
     }
@@ -89,31 +53,11 @@
         transform : rotateY(180deg);
         opacity: 0;
     }
-    10%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
-    20%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
-    30%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
-    40%{
-        transform : rotateY(180deg);
-        opacity: 0;
-    }
     50%{
         transform : rotateY(180deg);
         opacity: 0;
     }
     60%{
-        transform : rotateY(0);
-        opacity: 1;
-    }
-    70%{
         transform : rotateY(0);
         opacity: 1;
     }
@@ -166,3 +110,146 @@
     animation : rotateTitle3 10s ease-in-out infinite;
 }
 
+
+/*
+@keyframes popAndFade1 {
+    0%   {
+        opacity: 1;
+        transform: scale(1,1)    translateY(0);
+    }
+    2%  {
+        opacity: 1;
+        transform: scale(1.1,.9) translateY(0);
+    }
+    6% {
+        opacity: 1;
+        transform: scale(.9,1.1) translateY(-100px);
+    }
+    10% {
+        opacity: 1;
+        transform: scale(.9,1.1) translateY(-100px);
+    }
+    20%{
+        transform: scale(1,1)    translateY(0);
+    }
+    30%{
+        opacity: 0;
+    }
+    90%{
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1,1)    translateY(0);
+    }
+}
+
+@keyframes popAndFade2 {
+    0%{
+        opacity: 0;
+    }
+    20%{
+        opacity: 0;
+    }
+    30%   {
+        opacity: 1;
+        transform: scale(1,1)    translateY(0);
+    }
+    32%  {
+        opacity: 1;
+        transform: scale(1.1,.9) translateY(0);
+    }
+    36% {
+        opacity: 1;
+        transform: scale(.9,1.1) translateY(-100px);
+    }
+    40% {
+        opacity: 1;
+        transform: scale(.9,1.1) translateY(-100px);
+    }
+    50%{
+        transform: scale(1,1)    translateY(0);
+    }
+    60%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 0;
+    }
+}
+
+@keyframes popAndFade3 {
+    0%{
+        opacity: 0;
+    }
+    50%{
+        opacity: 0;
+    }
+    60%   {
+        opacity: 1;
+        transform: scale(1,1)    translateY(0);
+    }
+    62%  {
+        opacity: 1;
+        transform: scale(1.1,.9) translateY(0);
+    }
+    66% {
+        opacity: 1;
+        transform: scale(.9,1.1) translateY(-100px);
+    }
+    70% {
+        opacity: 1;
+        transform: scale(.9,1.1) translateY(-100px);
+    }
+    85%{
+        transform: scale(1,1)    translateY(0);
+    }
+    100%{
+        opacity: 0;
+    }
+}
+
+.middle-container{
+    width: 100%;
+    height: 25rem;
+    position: relative;
+}
+
+.middle-container-wrapper1{
+    width: inherit;
+    height: inherit;
+}
+.middle-container-wrapper2{
+    width: inherit;
+    height: inherit;
+    position:absolute;
+    top:0;
+}
+.middle-container-wrapper3{
+    width: inherit;
+    height: inherit;
+    position:absolute;
+    top:0;
+}
+
+.middle-box1{
+    animation : popAndFade1 8s ease-in-out infinite;
+}
+.middle-box2{
+    animation : popAndFade2 8s ease-in-out infinite;
+}
+.middle-box3{
+    animation : popAndFade3 8s ease-in-out infinite;
+}*/
+
+.middle-box{
+    position: relative;
+}
+
+.middle-box-text{
+    position: absolute;
+    top: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
