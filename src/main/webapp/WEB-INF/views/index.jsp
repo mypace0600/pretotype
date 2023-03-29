@@ -65,9 +65,7 @@
                 <span>이메일을 남겨주시면</span>
                 <span>서비스 런칭시 사용할 수 있는</span>
                 <span>할인 쿠폰을 보내드립니다.</span>
-                <div class="d-flex justify-content-center"><img src="/img/hugging_face_3d.png"/></div>
                 <div class="d-flex justify-content-center"><img src="/img/incoming_envelope_3d.png"/></div>
-                <div class="d-flex justify-content-center"><img src="/img/open_mailbox_with_lowered_flag_3d.png"/></div>
                 <div class="d-flex justify-content-center"><img src="/img/open_mailbox_with_raised_flag_3d.png"/></div>
                 <div class="d-flex justify-content-center"><img src="/img/smiling_face_with_heart-eyes_3d.png"/></div>
             </div>
